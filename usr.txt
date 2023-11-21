@@ -1,0 +1,147 @@
+entity usr is
+
+Port (  clk :in STD LOGIC:
+
+	rst: in STD_LOGIC;
+
+	s: in STD_LOGIC_VECTOR(3 downto 0);
+
+	m: in STD_LOGIC_VECTOR(1 downto 0);
+
+	y:out STD_LOGIC_VECTOR(3 downto 0);
+
+end usr;
+
+architecture Behavioral of usr is
+
+signal t : STD_LOGIC_VECTOR(3 downto 0);
+
+begin
+
+	process (clk, rst)
+
+	begin 
+		if rst = '1' then
+		y<="0000";
+		else if clk'event and clk = '1' then
+		case(m) is
+		
+		when"00"=>
+			t(3)<= s(0);
+				t(2)<= t(3);
+				t(1)<= t(2);
+				t(0)<= t(1);
+				t(0)<= t(0);
+		when"01"=>
+			t(3)<= s(0);
+				t(2)<= t(3);
+				t(1)<= t(2);
+				t(0)<= t(1);
+				t(0)<= t(0);
+		when"10"=>
+			t<= s;
+				y<= t;
+		when"11"=>
+			t<= s;
+				t(2)<= t(3);
+				t(1)<= t(2);
+				t(0)<= t(1);
+				t(0)<= t(0);
+		
+				
+		when others=> NULL;
+		end case;
+		end if;
+	end process;
+
+end Behavioral;
+
+
+
+
+
+----------TEST BENCH
+
+--Instantiate the Unit Under Test (UUT)
+
+uut: usr PORT MAP (
+
+clk => clk,
+
+rst => rst,
+
+s => s;
+m => m;
+y => y;
+);
+
+--Clock process definitions
+
+clk process process
+
+begin
+
+clk <= '0';
+
+wait for clk period/2;
+
+clk <= '1';
+
+wait for clk period/2;
+
+end process;
+
+--Stimulus process 
+stim proc: process
+
+begin
+
+wait for 10 ns;
+
+rst<= '1';
+
+wait for 18 ns;
+
+rst<='0';
+
+wait for 20 ns;
+
+
+m<="00";
+
+s<="UUU1";
+
+wait for 80 ns;
+
+s<="111U";
+
+wait for 80 ns;
+
+
+m<="01"; 
+s<="0U0";
+
+wait for 40 ns:
+
+s<="U001";
+
+wait for 40 ns;
+
+
+mc="10";
+s< "1010";
+
+wait for 70 ns;
+s<="0U01";
+wait for 70 ns;
+
+m<="11"; 
+s<="U000"; 
+wait for 80 ns; 
+s<="1010"; 
+wait for 80 ns;
+
+wait; 
+end process;
+
+END;
